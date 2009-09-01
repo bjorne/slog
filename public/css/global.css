@@ -1,0 +1,23 @@
+body { padding-top: 70px; font-family: arial, sans-serif;}
+
+#control p { margin: 0; }
+#control { position: fixed; top: 0; left: 0; width: 100%; height: 50px; background: #ccc; padding: 10px; }
+#search input { font-size: 110%; }
+#datebuttons { width: 200px; float: right; }
+#results { font-family: Courier, monospaced; font-size: 80%; }
+
+#sql { float: right; width: 500px; font-size: 75%; font-family: courier;}
+#loading { display: none; width: 33%; left: 33%; top: 40%; font-size: 200%; font-weight: bold; text-align: center; position: fixed; background: #0c0; color: #fff; padding: 0; }
+#loading.error { background: #c00; }
+
+#info { font-size: 80%; padding-top: 5px; }
+
+a.select {
+  text-decoration: none;
+  color: #666;
+}
+
+a.nick {
+  text-decoration: none;
+  color: #333;
+}

@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+<head>  
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+  <title>Slog</title>
+	<link rel="stylesheet" href="/css/global.css" type="text/css" media="screen" />
+	<script type='text/javascript' src='/js/jquery.js'></script>
+		<script type='text/javascript' src='/js/jquery.ba-url.js'></script>
+	<script type='text/javascript' src='/js/site.js'></script>
+</head> 
+<body>
+
+
+<div id="control">
+	<form id="queryform">
+		<p id="datebuttons">
+			<input type="button" value="today" />
+			<input type="button" value="-1" />
+			<input type="button" value="-2" />
+			<input type="button" value="-3" />
+			<a href="#query=jokas">jokas</a>
+			<a href="#query=apa">apa</a>
+		</p>
+		<p id="search">
+			<input type="text" id="query" name="query" value="date:0" size="40" />
+			<input type="hidden" id="offset" name="offset" value="0" />
+			<input type="submit" id="submit" value="search" />
+		<p>
+		<p id="info"><input type="button" name="prevpage" id="prevpage" value="-" /><input type="button" name="nextpage" id="nextpage" value="+" /> <span id="meta"></span></p>
+	</form>
+</div>
+
+<div id="sql"></div>
+<div id="results">
+</div>
+
+<div id="loading"></div>
+</body>
+</html>
