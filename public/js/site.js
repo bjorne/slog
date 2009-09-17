@@ -45,34 +45,38 @@ $(document).ready(function() {
 		if (params.select) {
 		  select = params.select;
 		}
-    
+    		if (!data['lines']) {
+			alert("something went wrong");
+		}
 		for (var line in data['lines']) {
 		  line = data['lines'][line];
 		  var str = "";
-		  if (select == line.id)
+		  if (select == line.id) {
 		    str += "<strong>";
-		  str += "<a href=\"#\" class=\"select\" rel=\""+line.id+"\">[" + line.at + "]</a>";		
+		  }
+		  str += "<a href=\"#\" class=\"select\" rel=\""+line.id+"\">[" + line.at + "]</a>";
+			linedata = $.link(line.data);
 			switch (line.action) {
 				case 'MESG':
-					str += " &lt;" + nickStr(line) + "&gt; " + line.data + "<br />";
+					str += " &lt;" + nickStr(line) + "&gt; " + linedata + "<br />";
 					break;
 				case 'ACTI':
-					str += " * " + nickStr(line) + " " + line.data + "<br />";
+					str += " * " + nickStr(line) + " " + linedata + "<br />";
 					break;
 				case 'NICK':
-					str += " <span style=\"color: #900;\">*** " + nickStr(line) + "</span> -NICK-> <span style=\"color: #0AC92B;\">" + line.data + "</span><br />";
+					str += " <span style=\"color: #900;\">*** " + nickStr(line) + "</span> -NICK-> <span style=\"color: #0AC92B;\">" + linedata + "</span><br />";
 					break;
 				case 'TOPI':
-					str += " ### " + nickStr(line) + " changed topic to '" + line.data + "'<br />";
+					str += " ### " + nickStr(line) + " changed topic to '" + linedata + "'<br />";
 					break;
 				case 'JOIN':
 					str += " <span style=\"color: #090;\">&gt;&gt;&gt; " + nickStr(line) + " has joined</span><br />";
 					break;
 				case 'QUIT':
-					str += " <span style=\"color: #900;\">&lt;&lt;&lt; " + nickStr(line) + " has quit</span> (" + line.data + "<br />";
+					str += " <span style=\"color: #900;\">&lt;&lt;&lt; " + nickStr(line) + " has quit</span> (" + linedata + "<br />";
 					break;
 				default:
-					str += "<a href=\"#\" class=\"select\">[" + line.at + "]</a> <span style=\"color: #900;\">*** " + nickStr(line) + " " + line.action + " : " + line.data + "</span><br />";
+					str += "<a href=\"#\" class=\"select\">[" + line.at + "]</a> <span style=\"color: #900;\">*** " + nickStr(line) + " " + line.action + " : " + linedata + "</span><br />";
 			}
 			if (select == line.id)
 		    str += "</strong>";
