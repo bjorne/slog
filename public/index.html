@@ -15,19 +15,21 @@
 <div id="control">
 	<form id="queryform">
 		<p id="datebuttons">
+          <span id="count_time">0.1</span>
+          <span id="result_time">0.5</span>
 			<input type="button" value="today" />
 			<input type="button" value="-1" />
 			<input type="button" value="-2" />
 			<input type="button" value="-3" />
-			<a href="#query=jokas">jokas</a>
-			<a href="#query=apa">apa</a>
+			<a href="#query=avellan">Our best friend</a>
+			<a href="#query=http://">URLs</a>
 		</p>
 		<p id="search">
 			<input type="text" id="query" name="query" value="date:0" size="40" />
 			<input type="hidden" id="offset" name="offset" value="0" />
 			<input type="submit" id="submit" value="search" />
 		<p>
-		<p id="info"><input type="button" name="prevpage" id="prevpage" value="-" /><input type="button" name="nextpage" id="nextpage" value="+" /> <span id="meta"></span></p>
+		<p id="info"><input type="button" name="prevpage" id="prevpage" value="&laquo;" /><input type="button" name="nextpage" id="nextpage" value="&raquo;" /> <span id="meta"></span><span id="datejump"><a href="#" id="prevdate">--</a> <a href="#" id="nextdate">++</a></p>
 	</form>
 </div>
 
