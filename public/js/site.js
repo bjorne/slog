@@ -19,12 +19,14 @@ $(document).ready(function() {
     if (resetOffsetG) {
       $('#offset').val(0);
     }
+
     resetOffsetG = false;
     var querykey = $('#query').val();
     lastSerialization = $('#queryform').serialize();
-    $('#queryform input').attr('disabled', 'disabled');
-    
+
+    $('#offset, #submit').attr('disabled', 'disabled');
     $('#meta').html('');
+
     if (!cacheCount[querykey]) {
       $.ajax({ data: lastSerialization+'&count=true', success: processCountResponse });
     } else {
@@ -32,6 +34,7 @@ $(document).ready(function() {
     }
     
   });
+
   
   $('#queryform').submit(function() {
 
@@ -48,10 +51,9 @@ $(document).ready(function() {
     $(document).trigger('requestData', false);
     return false;
   });
-
   $('a.nick').live('click', function() {
     $.setFragment({ "select" : $(this).attr('rel'), "query" : "cont:" + $(this).attr('rel') });
-    $('#query').val("cont:" + $(this).attr('rel'));
+    //	  $('#query').val("cont:" + $(this).attr('rel'));
     $('#offset').val($.fragment().offset);
     $(document).trigger('requestData', true);
     return false;
@@ -79,14 +81,25 @@ $(document).ready(function() {
     $('#offset').val(offset).change();
     $(document).trigger('requestData', true);
   });
+
+  $('#datejump #nextdate').click(function() {
+    $('#query').val($('#query').val().split(/:/)[0] + ":" + (parseInt($('#query').val().split(/:/)[1])+1));
+
+    $('#queryform').trigger('submit');
+  });
+  $('#datejump #prevdate').click(function() {
+    $('#query').val($('#query').val().split(/:/)[0] + ":" + (parseInt($('#query').val().split(/:/)[1])-1));
+    $('#queryform').trigger('submit');
+  });
   
   $.fragmentChange(true);
   $(document).bind("fragmentChange", function(e){
     $('#query').val($.fragment().query);
     $('#offset').val($.fragment().offset);
     $(document).trigger('requestData', false);
-  });
+    //$('#queryform').trigger('submit');
 
+  });
   if ($.fragment().query) {
     $('#query').val($.fragment().query);
     $('#offset').val($.fragment().offset);
@@ -97,12 +110,12 @@ $(document).ready(function() {
 
 function processCountResponse(data) {
   cacheCount[$('#query').val()] = data;
+  $('#count_time').html("Ct:"+(data['time']+'').substring(0,5));
   var key = lastSerialization;
 
   if (cacheLines[key]) {
     processResponse(cacheLines[key]);
   }	else {
-    //console.debug("req. data for: " + key);
     $.ajax({ data: key });
   }
 }
@@ -116,9 +129,9 @@ function processResponse(data) {
   // assume count has been found!
   count = parseInt(cacheCount[$('#query').val()]['count']);
   
-  $('#results').html('time elapsed ' + data['time'] + 's <br/><br/>');
   $('#sql').html(data['queries']);
-  
+  $('#results').html("");
+
   var params = $.fragment();
   var select = 0;
 
@@ -161,19 +174,25 @@ function processResponse(data) {
       str += " <span style=\"color: #900;\">&lt;&lt;&lt; " + nickStr(line) + " has quit</span> (" + linedata + "<br />";
       break;
     default:
-      str += "<a href=\"#\" class=\"select\">[" + line.at + "]</a> <span style=\"color: #900;\">*** " + nickStr(line) + " " + line.action + " : " + linedata + "</span><br />";
+      str += " <span style=\"color: #900;\">*** " + nickStr(line) + " " + line.action + " : " + linedata + "</span><br />";
     }
 
     if (select == line.id)
       str += "</strong>";
     $('#results').append(str);
+
   }
+
+  $('#results').append('<br/><br/>dt:' + data['time'] + 's');
+  $('#result_time').html("Rt:" + (data['time'] + '').substring(0,5));
   
   offset = parseInt($('#offset').val());
   if (data['singleDate'] != 'yes') {
-    $('#meta').html("Showing " + offset + " - " + (data['lines'].length+offset) + " of " + count + " lines");
+    $('#meta').html("Showing <strong>" + offset + " - " + (data['lines'].length+offset) + " of " + count + "</strong> lines");
+    $('#datejump').hide();
   } else {
     $('#meta').html("Showing all " + count + " lines");
+    $('datejump').show();
   }
   
   $('#queryform input').removeAttr('disabled');

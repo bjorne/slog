@@ -61,7 +61,7 @@ class LogController
 		if ($offset < 0)
 			$offset = 0;
 
-
+                $debug = array();
 		$dataConditions = array();
 		$nickCondition = "";
 		$dateCondition = "";
@@ -75,22 +75,24 @@ class LogController
 				$subparts = split(":", $part);
 				if ($subparts == false) {
 					$dataConditions[] = $part;
+                                        $debug[] = "no subpart...";
 				} else {
+                                  $arg = trim($subparts[1]);
 					switch($subparts[0]) {
 						case 'nick':
-							$nickCondition = $subparts[1];
+							$nickCondition = $arg;
 							break;
 
 						case 'date':
-							$dateCondition = $subparts[1];
+							$dateCondition = $arg;
 							break;
 							
 						case 'desc':
-							$orderCondition = $subparts[1];
+							$orderCondition = $arg;
 							break;
 							
 						case 'cont':
-							return $this->handleContextSearch($subparts[1], $count);
+							return $this->handleContextSearch($arg, $count);
 
 						default:
 							$dataConditions[] = $part;		
@@ -104,7 +106,8 @@ class LogController
 
 		$clause = array();
 		$singleDate = false;
-		if ($dateCondition) {
+		if (strlen($dateCondition)) {
+                  $debug[] = $dateCondition;
 			if (preg_match("/^-(\d+)$/", $dateCondition, $m)) {
 				$date = strftime("%Y-%m-%d", strtotime("now -".$m[1]." days"));
 				$clause[] = "date = '$date'";
@@ -113,14 +116,18 @@ class LogController
 				$date = strftime("%Y-%m-%d", strtotime("20".$m[1]));
 				$clause[] = "date = '$date'";
 				$singleDate = true;
-			}
+			} elseif (preg_match("/^(0)$/", $dateCondition, $m)) {
+				$date = strftime("%Y-%m-%d", strtotime("now"));
+				$clause[] = "date = '$date'";
+				$singleDate = true;
+                        }
 		}	
 		if ($nickCondition) {
 			$clause[] = "nick LIKE '$nickCondition'";
 		}
 		
 		$orderName = "DESC";
-		if ($dateCondition)
+		if ($singleDate)
 		{
 			$orderName = "ASC";
 		}
@@ -128,6 +135,7 @@ class LogController
 			if (preg_match("/0/", $orderCondition))
 				$orderName = "ASC";
 		}
+                $debug[] = $orderName;
 		if ($dataConditions) {
 			$clause[] = " MATCH(data) AGAINST('\"$dataConditions\"' in boolean mode)"; //$dataConditions')";
 		}
@@ -143,16 +151,16 @@ class LogController
 		if ($singleDate)
 			$limit = null;
 	
-			if (!$count) {
-	    	$lines = $this->fetchAll($where, "id $orderName", $limit, $offset);
-				if ($singleDate)
-					return array('singleDate' => 'yes', 'lines' => $lines);
-				else
-					return array('lines' => $lines);
-			} else {
-				$c = $this->fetchCount($where); //->order('at DESC');
-				return array('count' => $c);
-			}
+                if (!$count) {
+                  $lines = $this->fetchAll($where, "id $orderName", $limit, $offset);
+                  if ($singleDate)
+                    return array('singleDate' => 'yes', 'lines' => $lines, 'debug' => $debug);
+                  else
+                    return array('lines' => $lines, 'debug' => $debug);
+                } else {
+                  $c = $this->fetchCount($where); //->order('at DESC');
+                  return array('count' => $c, 'debug' => $debug);
+                }
 	}
 	
 	function handleContextSearch($id, $count)
