@@ -120,6 +120,10 @@ class LogController
 				$date = strftime("%Y-%m-%d", strtotime("now"));
 				$clause[] = "date = '$date'";
 				$singleDate = true;
+                        } elseif (preg_match("/^\d{4}-\d{2}-\d{2}$/", $dateCondition, $m)) {
+				$date = strftime("%Y-%m-%d", strtotime($m[0]));
+				$clause[] = "date = '$date'";
+				$singleDate = true;
                         }
 		}	
 		if ($nickCondition) {
